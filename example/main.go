@@ -11,7 +11,7 @@ import (
 func main() {
 	// 从命令行参数获取必要参数
 	if len(os.Args) != 4 {
-		fmt.Println("用法: go_ceph_nfs <cluster_id> <pseudo_path> <fs_name>")
+		fmt.Println("usage: go_ceph_nfs <cluster_id> <pseudo_path> <fs_name>")
 		return
 	}
 
