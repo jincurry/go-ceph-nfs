@@ -31,7 +31,7 @@ func main() {
 		PseudoPath: pseudoPath,
 		FSName:     fsName,
 		ReadOnly:   false,
-	})
+	}, common.WithOutputFormat("json"), common.WithTimeout(60), common.WithPrintCommand(), common.WithVerbose())
 	if err != nil {
 		fmt.Printf("创建NFS导出失败: %v\n", err)
 		return
