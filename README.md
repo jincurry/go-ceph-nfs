@@ -1,7 +1,6 @@
-# go_ceph_nfs
+# go-ceph-nfs
 
-
-##  ceph-nfs-ganesha支持使用的命令
+## Commands supported by ceph-nfs-ganesha
 
 ```
 nfs cluster config get <cluster_id>                                                                                 Fetch NFS-Ganesha config
@@ -19,25 +18,25 @@ nfs export ls <cluster_id> [--detailed]                                         
 nfs export rm <cluster_id> <pseudo_path>                                                                            Remove a cephfs export
 ```
 
-## 前提条件
-1. ceph集群需要安装ceph-nfs-ganesha
-2. 执行的机器需要配置ceph客户端的密钥环 （/etc/ceph/ceph.client.admin.keyring）
-3. 执行的机器需要配置ceph的配置文件（/etc/ceph/ceph.conf）
-4. 执行的机器需要安装ceph相关工具（ceph-common）
+## Prerequisites
+1. The ceph cluster needs to install ceph-nfs-ganesha
+2. The machine executing the commands needs to configure the ceph client keyring (/etc/ceph/ceph.client.admin.keyring)
+3. The machine executing the commands needs to configure the ceph configuration file (/etc/ceph/ceph.conf)
+4. The machine executing the commands needs to install ceph related tools (ceph-common)
 
-## 使用示例
+## Usage Example
 
 ```go
 func main() {
     executor := &common.CephExecutor{}
 
-    // 创建集群管理器
+    // Create cluster manager
     clusterMgr := cluster.NewClusterManager(executor)
 
-    // 创建导出管理器
+    // Create export manager
     exportMgr := export.NewExportManager(executor)
 
-    // 创建新集群
+    // Create new cluster
     err := clusterMgr.Create(&cluster.Cluster{
         ID: "test-cluster",
         Ingress: true,
@@ -47,7 +46,7 @@ func main() {
         log.Fatal(err)
     }
 
-    // 创建CephFS导出
+    // Create CephFS export
     err = exportMgr.Create(&export.Export{
         ClusterID:  "test-cluster",
         PseudoPath: "/test",
@@ -58,4 +57,3 @@ func main() {
         log.Fatal(err)
     }
 }
-```

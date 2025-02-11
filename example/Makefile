@@ -1,33 +1,33 @@
-# 设置 Go 编译器
+# Set Go compiler
 GO := go
 
-# 设置二进制文件名
+# Set binary file name
 BINARY_NAME := go_ceph_nfs
 
-# 设置源文件目录
+# Set source file directory
 SRC_DIR := .
 
-# 设置构建标记和编译选项
+# Set build flags and compile options
 LDFLAGS := -s -w
 
 .PHONY: all build clean install
 
-# 默认目标
+# Default target
 all: build
 
-# 构建目标
+# Build target
 build:
 	$(GO) build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME) $(SRC_DIR)
 
-# 清理目标
+# Clean target
 clean:
 	rm -f $(BINARY_NAME)
 	$(GO) clean
 
-# 安装目标
+# Install target
 install:
 	$(GO) install
 
-# 运行测试
+# Run tests
 test:
 	$(GO) test ./...

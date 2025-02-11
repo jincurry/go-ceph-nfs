@@ -1,8 +1,7 @@
 package export
 
-import "gitlab.xpaas.lenovo.com/db-self-backend-project/go_ceph_nfs/pkg/common"
+import "github.com/jincurry/go-ceph-nfs/pkg/common"
 
-// 导出相关的类型定义
 type ExportType string
 
 const (
@@ -13,10 +12,10 @@ const (
 type Export struct {
 	ClusterID   string
 	PseudoPath  string
-	FSName      string // CephFS专用
-	Path        string // CephFS专用
-	Bucket      string // RGW专用
-	UserID      string // RGW专用
+	FSName      string // for CephFS
+	Path        string // for CephFS
+	Bucket      string // for RGW
+	UserID      string // for RGW
 	ReadOnly    bool
 	ClientAddrs []string
 	Squash      string

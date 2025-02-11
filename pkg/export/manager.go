@@ -3,7 +3,7 @@ package export
 import (
 	"strings"
 
-	"gitlab.xpaas.lenovo.com/db-self-backend-project/go_ceph_nfs/pkg/common"
+	"github.com/jincurry/go-ceph-nfs/pkg/common"
 )
 
 type exportManager struct {

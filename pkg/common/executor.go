@@ -9,18 +9,18 @@ import (
 	"github.com/go-cmd/cmd"
 )
 
-// ExecuteOption 定义执行选项的函数类型
+// ExecuteOption defines the function type for execution options
 type ExecuteOption func(*executeOptions)
 
-// executeOptions 内部选项结构体
+// executeOptions internal options struct
 type executeOptions struct {
-	printCommand bool   // 是否打印执行的命令
-	verbose      bool   // 是否输出详细信息
-	outputFormat string // 输出格式：text/json
-	timeout      int    // 执行超时时间(秒)
+	printCommand bool   // Whether to print the executed command
+	verbose      bool   // Whether to output detailed information
+	outputFormat string // Output format: text/json
+	timeout      int    // Execution timeout (seconds)
 }
 
-// 定义选项设置函数
+// Define option setting functions
 func WithPrintCommand() ExecuteOption {
 	return func(o *executeOptions) {
 		o.printCommand = true
@@ -45,7 +45,7 @@ func WithTimeout(seconds int) ExecuteOption {
 	}
 }
 
-// ExecuteResult 定义执行结果
+// ExecuteResult defines the execution result
 type ExecuteResult struct {
 	Command  string   `json:"command"`
 	Args     []string `json:"args"`
@@ -54,12 +54,12 @@ type ExecuteResult struct {
 	ExitCode int      `json:"exit_code"`
 }
 
-// 命令执行器接口
+// Command executor interface
 type Executor interface {
 	Execute(command string, args []string, opts ...ExecuteOption) (*ExecuteResult, error)
 }
 
-// CephExecutor 实现
+// CephExecutor implementation
 type CephExecutor struct{}
 
 func NewCephExecutor() *CephExecutor {
@@ -67,13 +67,13 @@ func NewCephExecutor() *CephExecutor {
 }
 
 func (e *CephExecutor) Execute(command string, args []string, opts ...ExecuteOption) (*ExecuteResult, error) {
-	// 设置默认选项
+	// Set default options
 	options := &executeOptions{
 		outputFormat: "text",
 		timeout:      30,
 	}
 
-	// 应用所有选项
+	// Apply all options
 	for _, opt := range opts {
 		opt(options)
 	}
@@ -83,18 +83,18 @@ func (e *CephExecutor) Execute(command string, args []string, opts ...ExecuteOpt
 		Args:    args,
 	}
 
-	// 打印命令
+	// Print command
 	if options.printCommand {
 		fmt.Printf("Executing: %s %v\n", command, args)
 	}
 
-	// 实现具体的命令执行逻辑
+	// Implement the specific command execution logic
 	cephCmd := cmd.NewCmd(command, args...)
 
 	statusChan := cephCmd.Start() // non-blocking
 
 	ticker := time.NewTicker(1 * time.Second)
-	// 创建一个用于超时的 channel
+	// Create a channel for timeout
 	timeoutChan := time.After(time.Duration(options.timeout) * time.Second)
 
 	// Print last line of stdout every 1s
@@ -106,16 +106,16 @@ func (e *CephExecutor) Execute(command string, args []string, opts ...ExecuteOpt
 		}
 	}()
 
-	// 等待命令完成或超时
+	// Wait for the command to complete or timeout
 	select {
 	case finalStatus := <-statusChan:
-		// 命令正常完成
+		// Command completed normally
 		ticker.Stop()
 		result.Output = strings.Join(finalStatus.Stdout, "\n")
 		result.Error = strings.Join(finalStatus.Stderr, "\n")
 		result.ExitCode = finalStatus.Exit
 	case <-timeoutChan:
-		// 命令超时
+		// Command timed out
 		ticker.Stop()
 		cephCmd.Stop()
 		result.Error = fmt.Sprintf("command execution timed out after %d seconds", options.timeout)
@@ -123,7 +123,7 @@ func (e *CephExecutor) Execute(command string, args []string, opts ...ExecuteOpt
 		return result, fmt.Errorf("command execution timed out after %d seconds", options.timeout)
 	}
 
-	// 处理输出格式
+	// Handle output format
 	if options.outputFormat == "json" {
 		jsonBytes, err := json.Marshal(result)
 		if err != nil {
@@ -132,7 +132,7 @@ func (e *CephExecutor) Execute(command string, args []string, opts ...ExecuteOpt
 		fmt.Println(string(jsonBytes))
 	}
 
-	// 详细输出
+	// Detailed output
 	if options.verbose {
 		fmt.Printf("Command result: %+v\n", result.Output)
 		fmt.Printf("Command error: %+v\n", result.Error)

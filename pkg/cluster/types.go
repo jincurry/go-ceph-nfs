@@ -1,8 +1,7 @@
 package cluster
 
-import "gitlab.xpaas.lenovo.com/db-self-backend-project/go_ceph_nfs/pkg/common"
+import "github.com/jincurry/go-ceph-nfs/pkg/common"
 
-// 集群相关的类型定义
 type Cluster struct {
 	ID        string
 	Placement string

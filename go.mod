@@ -1,4 +1,4 @@
-module gitlab.xpaas.lenovo.com/db-self-backend-project/go_ceph_nfs
+module github.com/jincurry/go-ceph-nfs
 
 go 1.23.4
 

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"gitlab.xpaas.lenovo.com/db-self-backend-project/go_ceph_nfs/pkg/common"
-	"gitlab.xpaas.lenovo.com/db-self-backend-project/go_ceph_nfs/pkg/export"
+	"github.com/jincurry/go-ceph-nfs/pkg/common"
+	"github.com/jincurry/go-ceph-nfs/pkg/export"
 )
 
 func main() {
