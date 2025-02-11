@@ -47,13 +47,13 @@ func main() {
     }
 
     // Create CephFS export
-    err = exportMgr.Create(&export.Export{
-        ClusterID:  "test-cluster",
-        PseudoPath: "/test",
-        FSName:     "cephfs",
-        ReadOnly:   true,
-    })
-    if err != nil {
-        log.Fatal(err)
-    }
+    err = exportMgr.Create(export.ExportTypeCephFS, &export.Export{
+		ClusterID:  "test-cluster",
+		PseudoPath: "/test",
+		FSName:     "cephfs",
+		ReadOnly:   true,
+	}, common.WithOutputFormat("json"), common.WithTimeout(60), common.WithPrintCommand(), common.WithVerbose())
+	if err != nil {
+		log.Fatal(err)
+	}
 }
