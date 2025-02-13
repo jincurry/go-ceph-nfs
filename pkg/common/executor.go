@@ -60,10 +60,16 @@ type Executor interface {
 }
 
 // CephExecutor implementation
-type CephExecutor struct{}
+type CephExecutor struct {
+	KeyringFile string
+	ConfFile    string
+}
 
-func NewCephExecutor() *CephExecutor {
-	return &CephExecutor{}
+func NewCephExecutor(keyringFile, confFile string) *CephExecutor {
+	return &CephExecutor{
+		KeyringFile: keyringFile,
+		ConfFile:    confFile,
+	}
 }
 
 func (e *CephExecutor) Execute(command string, args []string, opts ...ExecuteOption) (*ExecuteResult, error) {
@@ -80,12 +86,14 @@ func (e *CephExecutor) Execute(command string, args []string, opts ...ExecuteOpt
 
 	result := &ExecuteResult{
 		Command: command,
-		Args:    args,
+		Args:    append(args, "--keyring", e.KeyringFile, "--conf", e.ConfFile),
 	}
 
 	// Print command
 	if options.printCommand {
-		fmt.Printf("Executing: %s %v\n", command, args)
+		cmd := append([]string{command}, args...)
+		cmdStr := strings.Join(cmd, " ")
+		fmt.Printf("Executing Command: %s\n", cmdStr)
 	}
 
 	// Implement the specific command execution logic
@@ -96,15 +104,6 @@ func (e *CephExecutor) Execute(command string, args []string, opts ...ExecuteOpt
 	ticker := time.NewTicker(1 * time.Second)
 	// Create a channel for timeout
 	timeoutChan := time.After(time.Duration(options.timeout) * time.Second)
-
-	// Print last line of stdout every 1s
-	go func() {
-		for range ticker.C {
-			status := cephCmd.Status()
-			n := len(status.Stdout)
-			fmt.Println(status.Stdout[n-1])
-		}
-	}()
 
 	// Wait for the command to complete or timeout
 	select {

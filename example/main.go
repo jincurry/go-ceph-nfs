@@ -20,7 +20,7 @@ func main() {
 	fsName := os.Args[3]
 
 	// 创建执行器
-	executor := common.NewCephExecutor()
+	executor := common.NewCephExecutor("/etc/ceph/ceph.client.admin.keyring", "/etc/ceph/ceph.conf")
 
 	// 创建导出管理器
 	exportMgr := export.NewExportManager(executor)
